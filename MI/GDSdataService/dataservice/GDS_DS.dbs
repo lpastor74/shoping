@@ -1,0 +1,79 @@
+<data name="GDS_DS" serviceNamespace="" serviceGroup="" transports="http https">
+  <description>Exposing the Space data service as a REST service.</description>
+  <config id="default">
+    <property name="driverClassName">com.mysql.jdbc.Driver</property>
+    <property name="url">jdbc:mysql://xxx.com:3306/cloud_demo</property>
+    <property name="org.wso2.ws.dataservice.user">xxx</property>
+    <property name="org.wso2.ws.dataservice.password">xxx</property>
+  </config>
+  <resource method="POST" path="product">
+    <description />
+    <call-query href="productInsert">
+      <with-param name="type" query-param="type" />
+      <with-param name="name" query-param="name" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="productXML">
+    <description />
+    <call-query href="productListXML" />
+  </resource>
+  <resource method="GET" path="productJSON">
+    <description />
+    <call-query href="productListJSON" />
+  </resource>
+  <resource method="PUT" path="product">
+    <description />
+    <call-query href="productUpdate">
+      <with-param name="type" query-param="type" />
+      <with-param name="name" query-param="name" />
+      <with-param name="productId" query-param="productId" />
+    </call-query>
+  </resource>
+  <resource method="DELETE" path="product">
+    <description />
+    <call-query href="productDelete">
+      <with-param name="productId" query-param="productId" />
+    </call-query>
+  </resource>
+  <query id="productInsert" useConfig="default">
+    <sql>INSERT INTO Product (`Type`, `Name`) VALUES (:type,:name);</sql>
+    <param name="type" paramType="SCALAR" sqlType="STRING" />
+    <param name="name" paramType="SCALAR" sqlType="STRING" />
+  </query>
+  <query id="productUpdate" useConfig="default">
+    <sql>UPDATE  Product SET `Type`=:type, `Name` =:name WHERE id =:productId ;</sql>
+    <param name="type" paramType="SCALAR" sqlType="STRING" />
+    <param name="name" paramType="SCALAR" sqlType="STRING" />
+    <param name="productId" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+  </query>
+  <query id="productDelete" useConfig="default">
+    <sql>DELETE FROM Product WHERE id =:productId ;</sql>
+    <param name="productId" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+  </query>
+  <query id="productListJSON" useConfig="default">
+    <sql>SELECT Type, Name FROM Product ;</sql>
+    <result outputType="json">{"Products":{"Product":[{"Type":"$Type", "Name":"$Name"}]}}</result>
+  </query>
+  <query id="productListXML" useConfig="default">
+    <sql>SELECT Type, Name FROM Product ;</sql>
+    <result outputType="xml" element="Products" rowName="Product">
+      <element column="Type" name="Type" xsdType="xs:string" />
+      <element column="Name" name="Name" xsdType="xs:string" />
+    </result>
+  </query>
+  <query id="createList" useConfig="default">
+    <sql>call orderList(?,?,?)</sql>
+    <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="zip" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="qty" paramType="SCALAR" sqlType="DOUBLE" type="IN" optional="false" />
+    <result outputType="json">{"List":{"item":[ {"Qty":"$t_prod_quantity","ZIP":"$t_zip","Address":"$t_address","ProductName":"$t_product_name"}]}}</result>
+  </query>
+  <resource method="POST" path="order">
+    <description />
+    <call-query href="createList">
+      <with-param name="id" query-param="id" />
+      <with-param name="zip" query-param="zip" />
+      <with-param name="qty" query-param="qty" />
+    </call-query>
+  </resource>
+</data>

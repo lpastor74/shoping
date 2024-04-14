@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="transport" groupId="gds.example.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/transport.xml</file>
+    </artifact>
+    <artifact name="transport_swagger" groupId="gds.example.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/transport_swagger.yaml</file>
+    </artifact>
+    <artifact name="transport_metadata" groupId="gds.example.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/transport_metadata.yaml</file>
+    </artifact>
+    <artifact name="MailTrap_CONNECTION" groupId="gds.example.local-entry" version="1.0.0" type="synapse/local-entry" serverRole="EnterpriseServiceBus">
+        <file>/src/main/synapse-config/local-entries/MailTrap_CONNECTION.xml</file>
+    </artifact>
+    <artifact name="KAFKAconn" groupId="gds.example.local-entry" version="1.0.0" type="synapse/local-entry" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/local-entries/KAFKAconn.xml</file>
+    </artifact>
+    <artifact name="callDataService" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/callDataService.xml</file>
+    </artifact>
+    <artifact name="ErrorLog" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/ErrorLog.xml</file>
+    </artifact>
+    <artifact name="InfoLog" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/InfoLog.xml</file>
+    </artifact>
+    <artifact name="sendEmail" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/sendEmail.xml</file>
+    </artifact>
+    <artifact name="FTP_product" groupId="gds.example.inbound-endpoint" version="1.0.0" type="synapse/inbound-endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/inbound-endpoints/FTP_product.xml</file>
+    </artifact>
+    <artifact name="callDSnoBack" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/callDSnoBack.xml</file>
+    </artifact>
+    <artifact name="Kafka_watcher" groupId="gds.example.inbound-endpoint" version="1.0.0" type="synapse/inbound-endpoint" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/inbound-endpoints/Kafka_watcher.xml</file>
+    </artifact>
+    <artifact name="callDS4Kafka" groupId="gds.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/callDS4Kafka.xml</file>
+    </artifact>
+</artifacts>

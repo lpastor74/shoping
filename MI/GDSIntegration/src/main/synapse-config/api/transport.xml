@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/order" name="transport" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/kafka">
+        <inSequence>
+            <log description="Full data payload" level="full"/>
+            <kafkaTransport.publishMessages configKey="KAFKAconn">
+                <topic>order</topic>
+                <partitionNo>0</partitionNo>
+            </kafkaTransport.publishMessages>
+            <respond/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+    <resource methods="POST" uri-template="/simple">
+        <inSequence>
+            <sequence key="callDataService"/>
+        </inSequence>
+        <outSequence/>
+        <faultSequence/>
+    </resource>
+</api>

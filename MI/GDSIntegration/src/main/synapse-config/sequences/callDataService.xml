@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="callDataService" onError="ErrorLog" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="Message " value="----------   ORDER LIST RECEIVED   ---------"/>
+    </log>
+    <log level="full"/>
+    <iterate expression="json-eval($.product_value)" id="RequestList">
+        <target>
+            <sequence>
+                <log level="full"/>
+                <header name="Content-Type" scope="transport" value="application/json"/>
+                <payloadFactory media-type="json">
+                    <format>{ "product_value": $1 }</format>
+                    <args>
+                        <arg evaluator="json" expression="$"/>
+                    </args>
+                </payloadFactory>
+                <call>
+                    <endpoint>
+                        <http method="post" uri-template="http://localhost:8310/services/GDS_DS/order">
+                            <suspendOnFailure>
+                                <initialDuration>-1</initialDuration>
+                                <progressionFactor>1</progressionFactor>
+                            </suspendOnFailure>
+                            <markForSuspension>
+                                <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                            </markForSuspension>
+                        </http>
+                    </endpoint>
+                </call>
+                <log level="full"/>
+            </sequence>
+        </target>
+    </iterate>
+    <aggregate id="RequestList">
+        <completeCondition>
+            <messageCount max="-1" min="-1"/>
+        </completeCondition>
+        <onComplete aggregateElementType="root" expression="json-eval($.)">
+            <log level="custom">
+                <property name="Message " value="----------    TRANSFORM Payload ---------"/>
+            </log>
+            <script language="js"><![CDATA[var input = mc.getPayloadJSON();
+		            var storeMap = {};
+		
+		            for (var i = 0; i < input.length; i++) {
+		               var listObj = input[i];
+		               for (var j = 0; j < listObj.List.item.length; j++) {
+		                  var item = listObj.List.item[j];
+		                  var storeKey = item.ZIP + '-' + item.Address;
+		                  var storeData = storeMap[storeKey];
+		                  if (storeData) {
+		                        storeData.items.push({
+		                           ProductName: item.ProductName,
+		                           Qty: item.Qty
+		                        });
+		                  } else {
+		                        storeMap[storeKey] = {
+		                           Store: {
+		                              ZIP: item.ZIP,
+		                              Address: item.Address
+		                           },
+		                           items: [{
+		                              ProductName: item.ProductName,
+		                              Qty: item.Qty
+		                           }]
+		                        };
+		                  }
+		               }
+		            }
+		
+		            var output = [];
+		            for (var key in storeMap) {
+		               if (storeMap.hasOwnProperty(key)) {
+		                  output.push(storeMap[key]);
+		               }
+		            }
+		
+		            mc.setPayloadJSON(output);]]></script>
+            <sequence key="sendEmail"/>
+        </onComplete>
+    </aggregate>
+</sequence>

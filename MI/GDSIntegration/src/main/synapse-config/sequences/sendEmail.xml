@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="sendEmail" onError="ErrorLog" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="Message " value="----------   SendingEmails   ---------"/>
+    </log>
+    <foreach expression="json-eval($.)">
+        <sequence>
+            <log level="full"/>
+            <property name="productID" scope="default" type="STRING" value=""/>
+            <header name="Content-Type" scope="transport" value="application/json"/>
+            <property expression="json-eval($.Store.ZIP)" name="Store" scope="default" type="STRING"/>
+            <property expression="json-eval($.items)" name="items" scope="default" type="STRING"/>
+            <payloadFactory media-type="json">
+                <format>{
+				    "from": "gdx@integration.com",
+				    "to": "storage$2@wso2.com",
+				    "subject": "New Order for pickup for store on $1, $2 ",
+				    "content": "Prepare the following item for pickup : $3",
+				    "contentType":"text/html"
+				}
+				</format>
+                <args>
+                    <arg evaluator="json" expression="$.Store.Address"/>
+                    <arg evaluator="json" expression="$.Store.ZIP"/>
+                    <arg evaluator="json" expression="$.items" literal="true"/>
+                </args>
+            </payloadFactory>
+            <email.send configKey="MailTrap_CONNECTION">
+                <from>{json-eval($.from)}</from>
+                <to>{json-eval($.to)}</to>
+                <subject>{json-eval($.subject)}</subject>
+                <content>{json-eval($.content)}</content>
+            </email.send>
+            <payloadFactory media-type="json">
+                <format>{
+				    "Message sent to ": "storage$1@wso2.com",
+				    "With following details ":  $2
+				}
+				</format>
+                <args>
+                    <arg evaluator="xml" expression="get-property('Store')"/>
+                    <arg evaluator="xml" expression="get-property('items')"/>
+                </args>
+            </payloadFactory>
+            <log level="full"/>
+        </sequence>
+    </foreach>
+    <respond/>
+</sequence>

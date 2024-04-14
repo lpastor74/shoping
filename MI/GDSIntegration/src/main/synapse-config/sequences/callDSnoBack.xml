@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="callDSnoBack" onError="ErrorLog" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="custom">
+        <property name="Message " value="----------   ORDER LIST RECEIVED   ---------"/>
+    </log>
+    <log level="full"/>
+    <iterate expression="json-eval($.product_value)" id="IterateFullOrderList">
+        <target>
+            <sequence>
+                <log level="full"/>
+                <property name="productID" scope="default" type="STRING" value=""/>
+                <header name="Content-Type" scope="transport" value="application/json"/>
+                <payloadFactory media-type="json">
+                    <format>{ "product_value": $1 }</format>
+                    <args>
+                        <arg evaluator="json" expression="$"/>
+                    </args>
+                </payloadFactory>
+                <call>
+                    <endpoint>
+                        <http method="post" uri-template="http://localhost:8310/services/GDS_DS/order">
+                            <suspendOnFailure>
+                                <initialDuration>-1</initialDuration>
+                                <progressionFactor>1</progressionFactor>
+                            </suspendOnFailure>
+                            <markForSuspension>
+                                <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                            </markForSuspension>
+                        </http>
+                    </endpoint>
+                </call>
+                <log level="full"/>
+            </sequence>
+        </target>
+    </iterate>
+    <aggregate id="IterateFullOrderList">
+        <completeCondition>
+            <messageCount max="-1" min="-1"/>
+        </completeCondition>
+        <onComplete aggregateElementType="root" expression="json-eval($.List.item)">
+            <sequence key="sendEmail"/>
+            <drop/>
+        </onComplete>
+    </aggregate>
+    <drop/>
+</sequence>

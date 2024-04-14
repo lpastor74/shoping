@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gds.example</groupId>
+    <artifactId>GDSIntegration</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>gds.example</groupId>
+  <artifactId>GDSIntegration_module</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>GDSIntegration_module</name>
+  <description>GDSIntegration_module</description>
+  <modules>
+    <module>api/transport</module>
+    <module>metadata/transport_swagger</module>
+    <module>metadata/transport_metadata</module>
+    <module>local-entries/MailTrap_CONNECTION</module>
+    <module>local-entries/KAFKAconn</module>
+    <module>sequences/callDataService</module>
+    <module>sequences/ErrorLog</module>
+    <module>sequences/InfoLog</module>
+    <module>sequences/sendEmail</module>
+    <module>inbound-endpoints/FTP_product</module>
+    <module>inbound-endpoints/Kafka_watcher</module>
+  </modules>
+</project>
